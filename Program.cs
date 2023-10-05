@@ -1,9 +1,6 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
-using JWT.Models;
+using JWT.Managers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
@@ -16,20 +13,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
   
-    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
+    // c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    // {
+    //     In = ParameterLocation.Header,
+    //     Name = "Authorization",
+    //     Type = SecuritySchemeType.ApiKey
+    // });
 
-    c.OperationFilter<SecurityRequirementsOperationFilter>();
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme.",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer"
-    });
+    
+    
+    // c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    // {
+    //     Description = "JWT Authorization header using the Bearer scheme.",
+    //     Type = SecuritySchemeType.Http,
+    //     Scheme = "bearer"
+    // });
     
     c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
     {
@@ -38,6 +36,8 @@ builder.Services.AddSwaggerGen(c =>
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
     });
+    
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
     
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
@@ -75,23 +75,29 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthentication().AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            builder.Configuration.GetSection("AppSettings:Token").Value!))
-    };
-});
+// builder.Services.AddAuthentication().AddJwtBearer(options =>
+// {
+//     options.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateIssuerSigningKey = true,
+//         ValidateAudience = false,
+//         ValidateIssuer = false,
+//         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+//             builder.Configuration.GetSection("AppSettings:Token").Value!))
+//     };
+// });
 
 builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
-    policy =>
-    {
-        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-    }));
+policy =>
+{
+    policy.WithOrigins("http://localhost:5220/").AllowAnyMethod().AllowAnyHeader();
+}));
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<ITokenManager, TokenManager>()
+    .AddScoped<IPasswordManager, PasswordManager>()
+    .AddScoped<IUserManager, UserManager>();
 
 builder.Services.AddAuthorization();
 
@@ -110,42 +116,42 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapGet("/security/getMessage",[Authorize]
-() => "Hello World!");
-
-app.MapPost("/security/createToken",
-[AllowAnonymous] (User user) =>
-{
-    if (user is { UserName: "Furqat", Password: "furqat123" })
-    {
-        var issuer = builder.Configuration["Jwt:Issuer"];
-        var audience = builder.Configuration["Jwt:Audience"];
-        var key = Encoding.ASCII.GetBytes
-        (builder.Configuration["Jwt:Key"]!);
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim("Id", Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Email, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti,
-                Guid.NewGuid().ToString())
-             }),
-            Expires = DateTime.UtcNow.AddSeconds(10),
-            Issuer = issuer,
-            Audience = audience,
-            SigningCredentials = new SigningCredentials
-            (new SymmetricSecurityKey(key),
-            SecurityAlgorithms.HmacSha512Signature)
-        };
-        var tokenHandler = new JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateToken(tokenDescriptor);
-        var jwtToken = tokenHandler.WriteToken(token);
-        var stringToken = tokenHandler.WriteToken(token);
-        return Results.Ok(stringToken);
-    }
-    return Results.Unauthorized();
-});
+// app.MapGet("/security/getMessage",[Authorize]
+// () => "Hello World!");
+//
+// app.MapPost("/security/createToken",
+// [AllowAnonymous] (UserDto user) =>
+// {
+//     if (user is { Username: "Furqat", Password: "furqat123" })
+//     {
+//         var issuer = builder.Configuration["Jwt:Issuer"];
+//         var audience = builder.Configuration["Jwt:Audience"];
+//         var key = Encoding.ASCII.GetBytes
+//         (builder.Configuration["Jwt:Key"]!);
+//         var tokenDescriptor = new SecurityTokenDescriptor
+//         {
+//             Subject = new ClaimsIdentity(new[]
+//             {
+//                 new Claim("Id", Guid.NewGuid().ToString()),
+//                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+//                 new Claim(JwtRegisteredClaimNames.Email, user.Username),
+//                 new Claim(JwtRegisteredClaimNames.Jti,
+//                 Guid.NewGuid().ToString())
+//              }),
+//             Expires = DateTime.UtcNow.AddSeconds(10),
+//             Issuer = issuer,
+//             Audience = audience,
+//             SigningCredentials = new SigningCredentials
+//             (new SymmetricSecurityKey(key),
+//             SecurityAlgorithms.HmacSha512Signature)
+//         };
+//         var tokenHandler = new JwtSecurityTokenHandler();
+//         var token = tokenHandler.CreateToken(tokenDescriptor);
+//         var jwtToken = tokenHandler.WriteToken(token);
+//         var stringToken = tokenHandler.WriteToken(token);
+//         return Results.Ok(stringToken);
+//     }
+//     return Results.Unauthorized();
+// });
 
 app.Run();
