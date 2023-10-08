@@ -1,0 +1,61 @@
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using JWT_advanced.Entities;
+using JWT_advanced.Models;
+using JWT_advanced.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace JWT_advanced.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class AuthController : Controller
+{
+    private readonly IHttpContextAccessor _contextAccessor;
+    private readonly IUserManager _userManager;
+    
+    public AuthController(IHttpContextAccessor contextAccessor, IUserManager userManager)
+    {
+        _contextAccessor = contextAccessor;
+        _userManager = userManager;
+    }
+
+    [HttpGet("auth")]
+    public ActionResult<string> GetMe()
+    {
+        var result = string.Empty;
+        if(_contextAccessor.HttpContext is not null)
+        {
+            result = _contextAccessor.HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Name);
+        }
+        
+        return Ok(result);
+    }
+
+    [HttpPost("register")]
+    [AllowAnonymous]
+    public async Task<ActionResult<User>> Register(UserDto request)
+    {
+        var user = await _userManager.RegisterUser(request);
+        return Ok(user);
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<ActionResult<string>> Login(UserDto request)
+    {
+        var currentContext = _contextAccessor.HttpContext ?? throw new ArgumentNullException();
+        var token = await  _userManager.LoginUser(request,currentContext);
+        return token is null ? BadRequest() : Ok(token);
+    }
+
+    [HttpGet("refresh-token")]
+    public async Task<ActionResult<string>> RefreshToken()
+    {
+        var currentContext = _contextAccessor.HttpContext ?? throw new ArgumentNullException();
+        var token = await _userManager.GenerateRefreshToken(currentContext);
+        return token is null ? BadRequest() : Ok(token);
+    }
+}
