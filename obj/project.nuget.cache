@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "UYnwnuq+IJUpRL4Zpl/M40XXqG4u0VDkQ4yeddAtGTmByAnDr/S2DzirMi1qrIaw33IVRbN1hU+mKbR46+nFZA==",
+  "dgSpecHash": "q9ZEXyHYfDz1N+2Zs720OBSZWvBlRwNNleYlOJz2hmUg9JIVYOaxbjMS7v/kG+7PXQv+H3WeXS+9tvVSYZBbqw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\furqa\\JWT_project\\JWT_advanced\\JWT_advanced.csproj",
+  "projectFilePath": "C:\\Users\\furqa\\JWT-Example\\JWT_advanced.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\furqa\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\furqa\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.11\\microsoft.aspnetcore.authentication.jwtbearer.7.0.11.nupkg.sha512",

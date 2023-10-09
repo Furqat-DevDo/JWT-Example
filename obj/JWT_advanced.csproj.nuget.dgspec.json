@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\furqa\\JWT_project\\JWT_advanced\\JWT_advanced.csproj": {}
+    "C:\\Users\\furqa\\JWT-Example\\JWT_advanced.csproj": {}
   },
   "projects": {
-    "C:\\Users\\furqa\\JWT_project\\JWT_advanced\\JWT_advanced.csproj": {
+    "C:\\Users\\furqa\\JWT-Example\\JWT_advanced.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\furqa\\JWT_project\\JWT_advanced\\JWT_advanced.csproj",
+        "projectUniqueName": "C:\\Users\\furqa\\JWT-Example\\JWT_advanced.csproj",
         "projectName": "JWT_advanced",
-        "projectPath": "C:\\Users\\furqa\\JWT_project\\JWT_advanced\\JWT_advanced.csproj",
+        "projectPath": "C:\\Users\\furqa\\JWT-Example\\JWT_advanced.csproj",
         "packagesPath": "C:\\Users\\furqa\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\furqa\\JWT_project\\JWT_advanced\\obj\\",
+        "outputPath": "C:\\Users\\furqa\\JWT-Example\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

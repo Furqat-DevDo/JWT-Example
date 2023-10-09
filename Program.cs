@@ -35,7 +35,13 @@ builder.Services.AddAuthentication(b =>
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin","Manager").RequireClaim("name"));
+    options.AddPolicy("ExclusiveContentPolicy",
+        policy => policy.RequireAssertion(context => context.User.HasClaim(claim => claim is { Type: "name", Value: "Furqat" }) ||
+                                                     context.User.IsInRole("Admin")));
+});
 
 builder.Services.AddCors(options => options.AddPolicy(name: "OurWhiteList",
 policy =>
