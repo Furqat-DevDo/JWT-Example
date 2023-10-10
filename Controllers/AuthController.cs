@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JWT.Entities;
 using JWT.Managers.Interfaces;
 using JWT.Models;
 using Microsoft.AspNetCore.Authorization;
