@@ -1,9 +1,8 @@
 using System.Text;
+using JWT_advanced.Data;
 using JWT_advanced.Options;
 using JWT_advanced.Services;
 using JWT_advanced.Services.Interfaces;
-using JWT.Data;
-using JWT.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -38,8 +37,12 @@ builder.Services.AddAuthentication(b =>
 
 builder.Services.AddAuthorization(options =>
 {
-  options.AddPolicy("AdminOnly", d => {d.RequireRole("Admin").RequireClaim("Id");});  
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin","Manager").RequireClaim("name"));
+    options.AddPolicy("ExclusiveContentPolicy",
+        policy => policy.RequireAssertion(context => context.User.HasClaim(claim => claim is { Type: "name", Value: "Furqat" }) &&
+                                                     context.User.IsInRole("Admin")));
 });
+    
 
 builder.Services.AddCors(options => options.AddPolicy(name: "OurWhiteList",
 policy =>

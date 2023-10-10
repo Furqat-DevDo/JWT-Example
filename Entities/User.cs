@@ -15,5 +15,6 @@ public class User
 public enum ERoles
 {
     User,
+    Manager,
     Admin
 }

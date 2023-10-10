@@ -70,7 +70,7 @@ public class UserManager : IUserManager
         var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Id == id)
                    ?? throw new UserNotFoundException("User not exist");
 
-        if (!user.RefreshToken.Equals(refreshToken))
+        if (!user.RefreshToken!.Equals(refreshToken))
             throw new UnauthorizedAccessException("Refresh tokens did not match !!!");
 
         if (user.TokenExpired < DateTime.Now)
@@ -83,7 +83,18 @@ public class UserManager : IUserManager
         
         return jwtToken;
     }
-    
+
+    public async Task<string?> SetUserRole(ERoles role, int userId)
+    {
+        var user = await _dbContext.Users.SingleOrDefaultAsync( u => u.Id == userId);
+        if (user is null) return null;
+        
+        user.Role = role;
+        await _dbContext.SaveChangesAsync();
+        
+        return await _tokenManager.GenerateToken(user);
+    }
+
     private async Task SetRefreshToken(RefreshToken newRefreshToken,
         HttpContext httpContext,User user)
     {

@@ -22,6 +22,7 @@ public class AuthController : Controller
         _userManager = userManager;
     }
 
+    [Authorize (Policy = "AdminOnly")]
     [HttpGet("auth")]
     public ActionResult<string> GetMe()
     {
@@ -57,5 +58,14 @@ public class AuthController : Controller
         var currentContext = _contextAccessor.HttpContext ?? throw new ArgumentNullException();
         var token = await _userManager.GenerateRefreshToken(currentContext);
         return token is null ? BadRequest() : Ok(token);
+    }
+    
+    //[Authorize(Roles = "Admin,Manager")]
+    [Authorize(Policy = "ExclusiveContentPolicy")]
+    [HttpPut("set-role")]
+    public async Task<IActionResult> SetUserRole([FromQuery]ERoles role,[FromQuery]int userId)
+    {
+        var result = await _userManager.SetUserRole(role,userId);
+        return result is null ? Unauthorized() : Ok(result);
     }
 }
