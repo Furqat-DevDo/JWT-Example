@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "PmM1Bblrf1dq3QKSqTzZSviZ+b9e5E7uqhScPOP6aP8=",
-  "Source": "JWT_advanced",
-  "BasePath": "_content/JWT_advanced",
+  "Hash": "7jZVTeZeU8K1qPm2AitUAKKQy59Gse3rRQkTaW3QUvM=",
+  "Source": "JWT",
+  "BasePath": "_content/JWT",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

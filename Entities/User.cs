@@ -1,4 +1,4 @@
-﻿namespace JWT_advanced.Entities;
+﻿namespace JWT.Entities;
 
 public class User
 {

@@ -1,8 +1,9 @@
 using System.Text;
-using JWT_advanced.Data;
 using JWT_advanced.Options;
 using JWT_advanced.Services;
 using JWT_advanced.Services.Interfaces;
+using JWT.Data;
+using JWT.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -35,7 +36,10 @@ builder.Services.AddAuthentication(b =>
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+  options.AddPolicy("AdminOnly", d => {d.RequireRole("Admin").RequireClaim("Id");});  
+});
 
 builder.Services.AddCors(options => options.AddPolicy(name: "OurWhiteList",
 policy =>

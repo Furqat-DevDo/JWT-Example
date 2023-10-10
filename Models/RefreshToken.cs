@@ -1,4 +1,4 @@
-﻿namespace JWT_advanced.Models;
+﻿namespace JWT.Models;
 
 public class RefreshToken
 {

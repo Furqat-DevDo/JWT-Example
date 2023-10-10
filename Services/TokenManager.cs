@@ -1,14 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using JWT_advanced.Entities;
-using JWT_advanced.Models;
 using JWT_advanced.Options;
 using JWT_advanced.Services.Interfaces;
+using JWT.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using User = JWT.Entities.User;
 
-namespace JWT_advanced.Services;
+namespace JWT.Services;
 
 public class TokenManager : ITokenManager
 {

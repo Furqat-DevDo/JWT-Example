@@ -1,5 +1,5 @@
-﻿using JWT_advanced.Entities;
-using JWT_advanced.Models;
+﻿using JWT.Models;
+using User = JWT.Entities.User;
 
 namespace JWT_advanced.Services.Interfaces;
 

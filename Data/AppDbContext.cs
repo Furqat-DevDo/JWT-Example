@@ -1,7 +1,7 @@
-﻿using JWT_advanced.Entities;
+﻿using JWT.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace JWT_advanced.Data;
+namespace JWT.Data;
 
 public class AppDbContext : DbContext
 {

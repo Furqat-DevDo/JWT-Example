@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
-using JWT_advanced.Data;
-using JWT_advanced.Entities;
-using JWT_advanced.Models;
 using JWT_advanced.Services.Interfaces;
+using JWT.Data;
+using JWT.Models;
 using Microsoft.EntityFrameworkCore;
+using User = JWT.Entities.User;
 
-namespace JWT_advanced.Services;
+namespace JWT.Services;
 
 public class UserManager : IUserManager
 {

@@ -1,12 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JWT_advanced.Entities;
-using JWT_advanced.Models;
 using JWT_advanced.Services.Interfaces;
+using JWT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using User = JWT.Entities.User;
 
-namespace JWT_advanced.Controllers;
+namespace JWT.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -33,7 +33,7 @@ public class AuthController : Controller
         
         return Ok(result);
     }
-
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<ActionResult<User>> Register(UserDto request)
