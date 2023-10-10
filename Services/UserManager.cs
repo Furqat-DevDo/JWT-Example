@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using JWT_advanced.Services.Interfaces;
 using JWT.Data;
+using JWT.Entities;
 using JWT.Models;
+using JWT.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using User = JWT.Entities.User;
 

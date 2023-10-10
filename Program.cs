@@ -1,8 +1,9 @@
 using System.Text;
-using JWT_advanced.Data;
 using JWT_advanced.Options;
-using JWT_advanced.Services;
 using JWT_advanced.Services.Interfaces;
+using JWT.Data;
+using JWT.Services;
+using JWT.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

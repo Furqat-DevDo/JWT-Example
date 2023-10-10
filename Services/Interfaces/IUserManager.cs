@@ -1,7 +1,8 @@
-﻿using JWT.Models;
+﻿using JWT.Entities;
+using JWT.Models;
 using User = JWT.Entities.User;
 
-namespace JWT_advanced.Services.Interfaces;
+namespace JWT.Services.Interfaces;
 
 public interface IUserManager
 {
