@@ -1,10 +1,11 @@
 using System.Text;
 using JWT_advanced.Options;
-using JWT_advanced.Services.Interfaces;
 using JWT.Data;
-using JWT.Services;
-using JWT.Services.Interfaces;
+using JWT.Managers;
+using JWT.Managers.Helpers;
+using JWT.Managers.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -57,7 +58,11 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<ITokenManager, TokenManager>()
     .AddScoped<IPasswordManager, PasswordManager>()
-    .AddScoped<IUserManager, UserManager>();
+    .AddScoped<IUserManager, UserManager>()
+    .AddScoped<IPermissionManager,PermissionManager>();
+
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 
 builder.Services.AddControllers();
 

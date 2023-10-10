@@ -1,7 +1,7 @@
 ﻿using JWT.Models;
 using User = JWT.Entities.User;
 
-namespace JWT_advanced.Services.Interfaces;
+namespace JWT.Managers.Interfaces;
 
 public interface ITokenManager
 {

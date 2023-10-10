@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
-using JWT_advanced.Services.Interfaces;
+using JWT.Managers.Interfaces;
 
-namespace JWT.Services;
+namespace JWT.Managers;
 
 public class PasswordManager : IPasswordManager
 {

@@ -1,13 +1,11 @@
 ﻿using System.Security.Claims;
-using JWT_advanced.Services.Interfaces;
 using JWT.Data;
-using JWT.Entities;
+using JWT.Managers.Interfaces;
 using JWT.Models;
-using JWT.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using User = JWT.Entities.User;
 
-namespace JWT.Services;
+namespace JWT.Managers;
 
 public class UserManager : IUserManager
 {
@@ -84,17 +82,6 @@ public class UserManager : IUserManager
         await SetRefreshToken(newRefreshToken,httpContext,user);
         
         return jwtToken;
-    }
-
-    public async Task<string?> SetUserRole(ERoles role, int userId)
-    {
-        var user = await _dbContext.Users.SingleOrDefaultAsync( u => u.Id == userId);
-        if (user is null) return null;
-        
-        user.Role = role;
-        await _dbContext.SaveChangesAsync();
-        
-        return await _tokenManager.GenerateToken(user);
     }
 
     private async Task SetRefreshToken(RefreshToken newRefreshToken,

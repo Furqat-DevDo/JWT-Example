@@ -1,4 +1,4 @@
-﻿namespace JWT_advanced.Services.Interfaces;
+﻿namespace JWT.Managers.Interfaces;
 
 public interface IPasswordManager
 {

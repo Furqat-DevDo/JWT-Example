@@ -1,9 +1,8 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JWT_advanced.Services.Interfaces;
 using JWT.Entities;
+using JWT.Managers.Interfaces;
 using JWT.Models;
-using JWT.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using User = JWT.Entities.User;
@@ -60,14 +59,5 @@ public class AuthController : Controller
         var currentContext = _contextAccessor.HttpContext ?? throw new ArgumentNullException();
         var token = await _userManager.GenerateRefreshToken(currentContext);
         return token is null ? BadRequest() : Ok(token);
-    }
-    
-    //[Authorize(Roles = "Admin,Manager")]
-    [Authorize(Policy = "ExclusiveContentPolicy")]
-    [HttpPut("set-role")]
-    public async Task<IActionResult> SetUserRole([FromQuery]ERoles role,[FromQuery]int userId)
-    {
-        var result = await _userManager.SetUserRole(role,userId);
-        return result is null ? Unauthorized() : Ok(result);
     }
 }
