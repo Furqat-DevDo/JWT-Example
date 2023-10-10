@@ -1,6 +1,7 @@
 using System.Text;
 using JWT_advanced.Options;
 using JWT.Data;
+using JWT.Enums;
 using JWT.Managers;
 using JWT.Managers.Helpers;
 using JWT.Managers.Interfaces;
@@ -43,6 +44,10 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("ExclusiveContentPolicy",
         policy => policy.RequireAssertion(context => context.User.HasClaim(claim => claim is { Type: "name", Value: "Furqat" }) &&
                                                      context.User.IsInRole("Admin")));
+    options.AddPolicy("UpdatePermission",
+        policy => policy.RequireAssertion(context => context.User.HasClaim(claim => claim is { Type: CustomClaims.Permissions, 
+            Value: nameof(Permission.UpdateMember)}) && context.User.IsInRole("Admin")));
+                                                     
 });
     
 
