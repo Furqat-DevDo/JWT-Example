@@ -96,6 +96,7 @@ public class UserManager : IUserManager
 
         var rolesList = await _roleManager.GetRoles(dto.roles);
         
+        //Noto'g'ri:
         user.Roles.Concat(rolesList);
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();
