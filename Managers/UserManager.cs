@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using JWT.Controllers;
 using JWT.Data;
 using JWT.Entities;
 using JWT.Managers.Interfaces;
@@ -11,16 +12,19 @@ public class UserManager : IUserManager
 {
     private readonly IPasswordManager _passwordManager;
     private readonly ITokenManager _tokenManager;
+    private readonly IRoleManager _roleManager;
     private readonly AppDbContext _dbContext;
     
-    public UserManager( 
-        IPasswordManager passwordManager, 
-        ITokenManager tokenManager, 
-        AppDbContext dbContext)
+    public UserManager(
+        IPasswordManager passwordManager,
+        ITokenManager tokenManager,
+        AppDbContext dbContext, 
+        IRoleManager roleManager)
     {
         _passwordManager = passwordManager;
         _tokenManager = tokenManager;
         _dbContext = dbContext;
+        _roleManager = roleManager;
     }
 
     public async Task<User> RegisterUser(UserDto request)
@@ -83,6 +87,25 @@ public class UserManager : IUserManager
         await SetRefreshToken(newRefreshToken,httpContext,user);
         
         return jwtToken;
+    }
+
+    public async Task<UserRoleDto> SetUserRoleAsync(SetRoleDto dto)
+    {
+        var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == dto.userId) ?? 
+                   throw new UserNotFoundException("User not found.");
+
+        var rolesList = await _roleManager.GetRoles(dto.roles);
+        
+        user.Roles.Concat(rolesList);
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync();
+        
+        return new UserRoleDto()
+        {
+            Id = user.Id,
+            Name = user.UserName,
+            Roles = user.Roles
+        };
     }
 
     private async Task SetRefreshToken(RefreshToken newRefreshToken,

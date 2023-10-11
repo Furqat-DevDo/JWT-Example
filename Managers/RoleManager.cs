@@ -40,4 +40,24 @@ public class RoleManager : IRoleManager
 
     public async Task<IEnumerable<Role>> GetAllRolesAsync()
         => await _dbContext.Roles.ToListAsync();
+
+    public async Task<IEnumerable<Role>> GetRoles(IEnumerable<int> roles)
+    {
+        List<Role> roleList = new();
+        foreach (var roleId in roles)
+        {
+            var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == roleId) ??
+                       throw new RoleNotFoundException("Role not found.");
+            roleList.Add(role);
+        }
+
+        return roleList;
+    }
+}
+
+public class RoleNotFoundException : Exception
+{
+    public RoleNotFoundException(string roleNotFound) : base(roleNotFound)
+    {
+    }
 }

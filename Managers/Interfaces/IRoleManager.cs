@@ -8,4 +8,5 @@ public interface IRoleManager
     public Task<Role> CreateRoleAsync(string name);
     public Task<IEnumerable<Role>> GetAllRolesAsync();
     public Task<bool> DeleteRoleAsync(string name);
+    public Task<IEnumerable<Role>> GetRoles(IEnumerable<int> roles);
 }
