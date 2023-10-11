@@ -1,5 +1,6 @@
 ﻿using JWT.Data;
 using JWT.Entities;
+using JWT.Exceptions;
 using JWT.Managers.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,33 @@ public class PermissionManager : IPermissionManager
     {
         _context = context;
     }
+
+    public async Task<Permission> CreatePermissionAsync(string name)
+    {
+        var permissionCheck = await _context.Permissions.AnyAsync(x => x.Name == name);
+        if (permissionCheck)
+            throw new PermissionAlreadyExistsException("This role already exists");
+
+        var permission = new Permission { Name = name };
+        var result = await _context.Permissions.AddAsync(permission);
+        await _context.SaveChangesAsync();
+        return result.Entity;
+    }
+
+    public async Task<bool> DeletePermissionsAsync(string name)
+    {
+        var permission = await _context.Permissions.SingleOrDefaultAsync(y => y.Name == name);
+        if (permission is null)
+            return false;
+
+        _context.Permissions.Remove(permission);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    public async Task<IEnumerable<Permission>> GetAllPermissionsAsync()
+        => await _context.Permissions.ToListAsync();
 
     public async Task<HashSet<string>> GetPermissionsAsync(int userId)
     {

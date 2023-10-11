@@ -1,9 +1,9 @@
 ﻿using System.Security.Claims;
 using JWT.Data;
+using JWT.Entities;
 using JWT.Managers.Interfaces;
 using JWT.Models;
 using Microsoft.EntityFrameworkCore;
-using User = JWT.Entities.User;
 
 namespace JWT.Managers;
 

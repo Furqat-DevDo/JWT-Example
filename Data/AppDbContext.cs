@@ -1,5 +1,4 @@
-﻿
-using JWT.Entities;
+﻿using JWT.Entities;
 using JWT.Options;
 using Microsoft.EntityFrameworkCore;
 

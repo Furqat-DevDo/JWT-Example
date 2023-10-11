@@ -9,6 +9,11 @@ public sealed class Role : Enumeration<Role>
     {
     }
 
+    public Role(string name)
+    {
+        Name = name;
+    }
+
     public ICollection<Permission> Permissions { get; set; }
     public ICollection<User> Users { get; set; }
 }
