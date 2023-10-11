@@ -1,7 +1,5 @@
-﻿using JWT.Data;
-using JWT.Entities;
+﻿using JWT.Entities;
 using JWT.Managers.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JWT.Controllers;
