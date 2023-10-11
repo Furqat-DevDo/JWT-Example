@@ -67,6 +67,7 @@ public class UserManager : IUserManager
 
         if(!int.TryParse(httpContext.User.FindFirstValue("Id"),out var id))
                        throw new UnauthorizedAccessException("User Id not found");
+        
         var user = await _dbContext.Users.SingleOrDefaultAsync(u => u.Id == id)
                    ?? throw new UserNotFoundException("User not exist");
 

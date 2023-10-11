@@ -22,7 +22,7 @@ public class AuthController : Controller
         _userManager = userManager;
     }
 
-    [Authorize (Policy = "AdminOnly")]
+    //[Authorize (Policy = "AdminOnly")]
     [HttpGet("auth")]
     public ActionResult<string> GetMe()
     {
@@ -34,6 +34,7 @@ public class AuthController : Controller
         
         return Ok(result);
     }
+    
     [Authorize(Policy = "AdminOnly")]
     [HttpPost("register")]
     [AllowAnonymous]
