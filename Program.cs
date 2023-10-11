@@ -64,7 +64,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ITokenManager, TokenManager>()
     .AddScoped<IPasswordManager, PasswordManager>()
     .AddScoped<IUserManager, UserManager>()
-    .AddScoped<IPermissionManager,PermissionManager>();
+    .AddScoped<IPermissionManager, PermissionManager>()
+    .AddScoped<IRoleManager, RoleManager>();
 
 builder.Services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
