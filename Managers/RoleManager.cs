@@ -28,7 +28,7 @@ public class RoleManager : IRoleManager
 
     public async Task<bool> DeleteRoleAsync(string name)
     {
-        var role = await _dbContext.Roles.FirstOrDefaultAsync(y => y.Name == name);
+        var role = await _dbContext.Roles.SingleOrDefaultAsync(y => y.Name == name);
         if(role is null)
             return false;
         
@@ -39,10 +39,5 @@ public class RoleManager : IRoleManager
     }
 
     public async Task<IEnumerable<Role>> GetAllRolesAsync()
-    {
-        var result = await _dbContext.Roles.ToListAsync();
-        return result.Any() 
-            ? result
-            : Enumerable.Empty<Role>();
-    }
+        => await _dbContext.Roles.ToListAsync();
 }

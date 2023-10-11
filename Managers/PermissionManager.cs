@@ -29,7 +29,7 @@ public class PermissionManager : IPermissionManager
 
     public async Task<bool> DeletePermissionsAsync(string name)
     {
-        var permission = await _context.Permissions.FirstOrDefaultAsync(y => y.Name == name);
+        var permission = await _context.Permissions.SingleOrDefaultAsync(y => y.Name == name);
         if (permission is null)
             return false;
 
@@ -40,12 +40,7 @@ public class PermissionManager : IPermissionManager
     }
 
     public async Task<IEnumerable<Permission>> GetAllPermissionsAsync()
-    {
-        var result = await _context.Permissions.ToListAsync();
-        return result.Any()
-            ? result
-            : Enumerable.Empty<Permission>();
-    }
+        => await _context.Permissions.ToListAsync();
 
     public async Task<HashSet<string>> GetPermissionsAsync(int userId)
     {
