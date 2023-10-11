@@ -15,15 +15,15 @@ public class RoleManager : IRoleManager
         _dbContext = appDbContext;
     }
 
-    public async Task<string> CreateRoleAsync(string name)
+    public async Task<Role> CreateRoleAsync(string name)
     {
-        var roleCheck = await _dbContext.Roles.FirstOrDefaultAsync(x => x.Name == name);
-        if (roleCheck is not null)
+        var roleCheck = await _dbContext.Roles.AnyAsync(x => x.Name == name);
+        if (roleCheck)
             throw new RoleAlreadyExistsException("This role already exists");
 
         var result = await _dbContext.Roles.AddAsync(new Role(name));
         await _dbContext.SaveChangesAsync();
-        return result.Entity.Name;
+        return result.Entity;
     }
 
     public async Task<bool> DeleteRoleAsync(string name)
@@ -38,11 +38,11 @@ public class RoleManager : IRoleManager
         return true;
     }
 
-    public async Task<IEnumerable<string>> GetAllRolesAsync()
+    public async Task<IEnumerable<Role>> GetAllRolesAsync()
     {
         var result = await _dbContext.Roles.ToListAsync();
         return result.Any() 
-            ? result.Select(x => x.Name) 
-            : Enumerable.Empty<string>();
+            ? result
+            : Enumerable.Empty<Role>();
     }
 }

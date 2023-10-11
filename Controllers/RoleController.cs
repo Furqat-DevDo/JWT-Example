@@ -7,14 +7,10 @@ namespace JWT.Controllers;
 [Route("api/[controller]")]
 public class RoleController : Controller
 {
-    private readonly IHttpContextAccessor _contextAccessor;
     private readonly IRoleManager _roleManager;
 
-    public RoleController(
-        IHttpContextAccessor contextAccessor, 
-        IRoleManager roleManager)
+    public RoleController(IRoleManager roleManager)
     {
-        _contextAccessor = contextAccessor;
         _roleManager = roleManager;
     }
 

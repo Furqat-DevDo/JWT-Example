@@ -17,9 +17,9 @@ public class PermissionManager : IPermissionManager
 
     public async Task<Permission> CreatePermissionAsync(string name)
     {
-        var permissionCheck = await _context.Permissions.FirstOrDefaultAsync(x => x.Name == name);
-        if (permissionCheck is not null)
-            throw new RoleAlreadyExistsException("This role already exists");
+        var permissionCheck = await _context.Permissions.AnyAsync(x => x.Name == name);
+        if (permissionCheck)
+            throw new PermissionAlreadyExistsException("This role already exists");
 
         var permission = new Permission { Name = name };
         var result = await _context.Permissions.AddAsync(permission);
