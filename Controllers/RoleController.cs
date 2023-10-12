@@ -1,5 +1,4 @@
-﻿using JWT.Entities;
-using JWT.Managers.Interfaces;
+﻿using JWT.Managers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JWT.Controllers;
@@ -9,12 +8,10 @@ namespace JWT.Controllers;
 public class RoleController : Controller
 {
     private readonly IRoleManager _roleManager;
-    private readonly IUserManager _userManager;
     
-    public RoleController(IRoleManager roleManager, IUserManager userManager)
+    public RoleController(IRoleManager roleManager)
     {
         _roleManager = roleManager;
-        _userManager = userManager;
     }
 
     [HttpPost("create")]
@@ -22,13 +19,6 @@ public class RoleController : Controller
     {
         var result = await _roleManager.CreateRoleAsync(name);
         return Ok(result);
-    }
-    
-    [HttpPut("set-user-role")]
-    public async Task<IActionResult> UserRoleAsync(SetRoleDto dto)
-    {
-        var user = await _userManager.SetUserRoleAsync(dto);
-        return Ok(user);
     }
 
     [HttpGet("getAll")]
@@ -44,7 +34,12 @@ public class RoleController : Controller
         var result = await _roleManager.DeleteRoleAsync(name);
         return Ok(result);
     }
-    
+
+    [HttpPut("set-permissions")]
+    public async Task<IActionResult> SetPermissions()
+    {
+        return Ok();
+    }
 }
 
 public record SetRoleDto(int userId, List<int> roles);

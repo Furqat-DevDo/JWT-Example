@@ -60,4 +60,11 @@ public class AuthController : Controller
         var token = await _userManager.GenerateRefreshToken(currentContext);
         return token is null ? BadRequest() : Ok(token);
     }
+    
+    [HttpPut("set-user-role")]
+    public async Task<IActionResult> UserRoleAsync(SetRoleDto dto)
+    {
+        var user = await _userManager.SetUserRoleAsync(dto);
+        return Ok(user);
+    }
 }
