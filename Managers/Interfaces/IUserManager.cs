@@ -9,5 +9,5 @@ public interface IUserManager
     Task<User> RegisterUser(UserDto request);
     Task<string?> LoginUser(UserDto request,HttpContext httpContext);
     Task<string?> GenerateRefreshToken(HttpContext httpContext);
-    Task<UserRoleDto> SetUserRoleAsync(SetRoleDto dto);
+    Task<string> SetUserRoleAsync(SetRoleDto dto);
 }

@@ -89,24 +89,35 @@ public class UserManager : IUserManager
         return jwtToken;
     }
 
-    public async Task<UserRoleDto> SetUserRoleAsync(SetRoleDto dto)
+    public async Task<string> SetUserRoleAsync(SetRoleDto dto)
     {
-        var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == dto.userId) ?? 
+        var user = await _dbContext.Users.
+                       Include(u =>u.Roles).
+                       SingleOrDefaultAsync(x => x.Id == dto.userId) ?? 
                    throw new UserNotFoundException("User not found.");
 
         var rolesList = await _roleManager.GetRoles(dto.roles);
+
+        if (!user.Roles.Any())
+        {
+            user.Roles = new List<Role>(rolesList);
+        }
+        else
+        {
+           var distinctRoles = rolesList.Except(user.Roles)??
+                               throw new Exception("Union returned null.");
+           
+           user.Roles.AddRange(distinctRoles);
+        }
         
-        //Noto'g'ri:
-        user.Roles.Concat(rolesList);
         _dbContext.Users.Update(user);
         await _dbContext.SaveChangesAsync();
-        
-        return new UserRoleDto()
-        {
-            Id = user.Id,
-            Name = user.UserName,
-            Roles = user.Roles
-        };
+
+        string jwtToken = await  _tokenManager.GenerateToken(user);
+         _tokenManager.GenerateRefreshToken();
+         await _dbContext.SaveChangesAsync();
+         
+        return jwtToken;
     }
 
     private async Task SetRefreshToken(RefreshToken newRefreshToken,

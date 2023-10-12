@@ -15,23 +15,42 @@ public class TokenManager : ITokenManager
 {
     private readonly IOptions<JWTOptions> _jwtOptions;
     private readonly IPermissionManager _permissionManager;
+    private readonly IRoleManager _roleManager;
     public TokenManager(IOptions<JWTOptions> jwtOptions, 
-        IPermissionManager permissionManager)
+        IPermissionManager permissionManager, 
+        IRoleManager roleManager)
     {
         _jwtOptions = jwtOptions;
         _permissionManager = permissionManager;
+        _roleManager = roleManager;
     }
     public async Task<string> GenerateToken(User user)
     {
         List<Claim> claims = new List<Claim>
         {
             new  ("Id",user.Id.ToString()),
-            new  (JwtRegisteredClaimNames.Name, user.UserName),
+            new  (JwtRegisteredClaimNames.Name, user.UserName)
         };
+
+        if (user.Roles.Any())
+        {
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new (CustomClaims.Roles, role.Name));
+            }
+        }
+        else
+        {
+            var roles = await  _roleManager.GetUserRoles(user.Id);
+            foreach (var role in roles)
+            {
+                claims.Add(new (CustomClaims.Roles, role.Name));
+            }
+        }
         
         HashSet<string> permissions = await _permissionManager
             .GetPermissionsAsync(user.Id);
-
+        
         foreach (string permission in permissions)
         {
             claims.Add(new(CustomClaims.Permissions, permission));

@@ -44,12 +44,12 @@ public class PermissionManager : IPermissionManager
 
     public async Task<HashSet<string>> GetPermissionsAsync(int userId)
     {
-        ICollection<Role>[] roles = await _context.Set<User>()
+        var roles = await _context.Set<User>()
             .Include(x => x.Roles)
             .ThenInclude(x => x.Permissions)
             .Where(x => x.Id == userId)
             .Select(x => x.Roles)
-            .ToArrayAsync();
+            .ToListAsync();
 
         return roles
             .SelectMany(x => x)
