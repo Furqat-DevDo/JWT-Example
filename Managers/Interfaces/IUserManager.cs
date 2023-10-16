@@ -1,5 +1,5 @@
-﻿using JWT.Models;
-using User = JWT.Entities.User;
+﻿using JWT.Entities;
+using JWT.Models;
 
 namespace JWT.Managers.Interfaces;
 
