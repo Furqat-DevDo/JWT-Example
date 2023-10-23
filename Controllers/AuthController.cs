@@ -4,7 +4,7 @@ using JWT.Managers.Interfaces;
 using JWT.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using User = JWT.Entities.User;
+using JWT.Entities;
 
 namespace JWT.Controllers;
 
@@ -35,7 +35,7 @@ public class AuthController : Controller
         return Ok(result);
     }
     
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Policy = "")]
     [HttpPost("register")]
     [AllowAnonymous]
     public async Task<ActionResult<User>> Register(UserDto request)
@@ -66,5 +66,12 @@ public class AuthController : Controller
     {
         var user = await _userManager.SetUserRoleAsync(dto);
         return Ok(user);
+    }
+
+    [HttpGet("get-all-users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await _userManager.GetAll();
+        return Ok(users);
     }
 }

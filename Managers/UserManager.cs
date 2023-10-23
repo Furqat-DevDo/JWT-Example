@@ -92,7 +92,7 @@ public class UserManager : IUserManager
     public async Task<string> SetUserRoleAsync(SetRoleDto dto)
     {
         var user = await _dbContext.Users.
-                       Include(u =>u.Roles).
+                       Include(u => u.Roles).
                        SingleOrDefaultAsync(x => x.Id == dto.userId) ?? 
                    throw new UserNotFoundException("User not found.");
 
@@ -135,6 +135,15 @@ public class UserManager : IUserManager
         user.TokenExpired = newRefreshToken.Expires;
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<string>> GetAll()
+    {
+        var users = await _dbContext.Users
+            .ToListAsync();
+
+        return users.Any()? users.Select(u => u.UserName) 
+            : Enumerable.Empty<string>();
     }
 }
 

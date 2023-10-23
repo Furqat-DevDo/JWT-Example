@@ -32,7 +32,7 @@ public class TokenManager : ITokenManager
             new  (JwtRegisteredClaimNames.Name, user.UserName)
         };
 
-        if (user.Roles.Any())
+        if (user.Roles is not null)
         {
             foreach (var role in user.Roles)
             {
@@ -41,7 +41,7 @@ public class TokenManager : ITokenManager
         }
         else
         {
-            var roles = await  _roleManager.GetUserRoles(user.Id);
+            var roles = await  _roleManager.GetUserRolesAsync(user.Id);
             foreach (var role in roles)
             {
                 claims.Add(new (CustomClaims.Roles, role.Name));
@@ -49,7 +49,7 @@ public class TokenManager : ITokenManager
         }
         
         HashSet<string> permissions = await _permissionManager
-            .GetPermissionsAsync(user.Id);
+            .GetUserPermissionsAsync(user.Id);
         
         foreach (string permission in permissions)
         {

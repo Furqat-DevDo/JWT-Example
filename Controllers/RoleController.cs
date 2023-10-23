@@ -1,5 +1,6 @@
 ﻿using JWT.Managers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace JWT.Controllers;
 
@@ -35,12 +36,29 @@ public class RoleController : Controller
         return Ok(result);
     }
 
-    [HttpPut("set-permissions")]
-    public async Task<IActionResult> SetPermissions()
+    [HttpPut("set-role-permissions")]
+    public async Task<IActionResult> SetPermissions(SetPermissionDto dto)
     {
-        return Ok();
+        var result = await _roleManager.SetRolePermissions(dto);
+        return Ok(result);
+    }
+
+    [HttpGet("get-user-roles")]
+    public async Task<IActionResult> GetUserRoles([FromQuery] int userId)
+    {
+        var userRoles = await _roleManager.GetUserRolesAsync(userId);
+        return Ok(userRoles);
+    }
+
+    [HttpGet("get-role-permissions")]
+    public async Task<IActionResult> GetRolPermissions([FromQuery] int roleId)
+    {
+        var rolePermissions = await _roleManager.GetRolePermissions(roleId);
+        return Ok(rolePermissions);
     }
 }
 
 public record SetRoleDto(int userId, List<int> roles);
+
+public record SetPermissionDto(int roleId, List<int> permissions);
 
