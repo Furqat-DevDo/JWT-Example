@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using JWT.Controllers;
 using JWT.Data;
 using JWT.Entities;
 using JWT.Managers.Interfaces;
@@ -11,16 +12,19 @@ public class UserManager : IUserManager
 {
     private readonly IPasswordManager _passwordManager;
     private readonly ITokenManager _tokenManager;
+    private readonly IRoleManager _roleManager;
     private readonly AppDbContext _dbContext;
     
-    public UserManager( 
-        IPasswordManager passwordManager, 
-        ITokenManager tokenManager, 
-        AppDbContext dbContext)
+    public UserManager(
+        IPasswordManager passwordManager,
+        ITokenManager tokenManager,
+        AppDbContext dbContext, 
+        IRoleManager roleManager)
     {
         _passwordManager = passwordManager;
         _tokenManager = tokenManager;
         _dbContext = dbContext;
+        _roleManager = roleManager;
     }
 
     public async Task<User> RegisterUser(UserDto request)
@@ -85,6 +89,37 @@ public class UserManager : IUserManager
         return jwtToken;
     }
 
+    public async Task<string> SetUserRoleAsync(SetRoleDto dto)
+    {
+        var user = await _dbContext.Users.
+                       Include(u => u.Roles).
+                       SingleOrDefaultAsync(x => x.Id == dto.userId) ?? 
+                   throw new UserNotFoundException("User not found.");
+
+        var rolesList = await _roleManager.GetRoles(dto.roles);
+
+        if (!user.Roles.Any())
+        {
+            user.Roles = new List<Role>(rolesList);
+        }
+        else
+        {
+           var distinctRoles = rolesList.Except(user.Roles)??
+                               throw new Exception("Union returned null.");
+           
+           user.Roles.AddRange(distinctRoles);
+        }
+        
+        _dbContext.Users.Update(user);
+        await _dbContext.SaveChangesAsync();
+
+        string jwtToken = await  _tokenManager.GenerateToken(user);
+         _tokenManager.GenerateRefreshToken();
+         await _dbContext.SaveChangesAsync();
+         
+        return jwtToken;
+    }
+
     private async Task SetRefreshToken(RefreshToken newRefreshToken,
         HttpContext httpContext,User user)
     {
@@ -100,6 +135,15 @@ public class UserManager : IUserManager
         user.TokenExpired = newRefreshToken.Expires;
 
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<string>> GetAll()
+    {
+        var users = await _dbContext.Users
+            .ToListAsync();
+
+        return users.Any()? users.Select(u => u.UserName) 
+            : Enumerable.Empty<string>();
     }
 }
 

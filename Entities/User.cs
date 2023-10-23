@@ -9,5 +9,5 @@ public class User
     public string? RefreshToken { get; set; }
     public DateTime? TokenCreated { get; set; }
     public DateTime? TokenExpired { get; set; }
-    public ICollection<Role> Roles { get; set; }
+    public List<Role>? Roles { get; set; }
 }

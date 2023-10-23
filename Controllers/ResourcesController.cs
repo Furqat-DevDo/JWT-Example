@@ -11,6 +11,7 @@ namespace JWT.Controllers;
 
 public class ResourcesController : Controller
 {
+    [Authorize]
     [HasPermission(Permission.UpdateMember)]
     //[Authorize(Policy = nameof(Permission.UpdateMember))]
     [HttpGet]

@@ -8,48 +8,60 @@ namespace JWT.Managers;
 
 public class PermissionManager : IPermissionManager
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _dbContext;
 
-    public PermissionManager(AppDbContext context)
+    public PermissionManager(AppDbContext dbContext)
     {
-        _context = context;
+        _dbContext = dbContext;
     }
 
     public async Task<Permission> CreatePermissionAsync(string name)
     {
-        var permissionCheck = await _context.Permissions.AnyAsync(x => x.Name == name);
+        var permissionCheck = await _dbContext.Permissions.AnyAsync(x => x.Name == name);
         if (permissionCheck)
             throw new PermissionAlreadyExistsException("This role already exists");
 
         var permission = new Permission { Name = name };
-        var result = await _context.Permissions.AddAsync(permission);
-        await _context.SaveChangesAsync();
+        var result = await _dbContext.Permissions.AddAsync(permission);
+        await _dbContext.SaveChangesAsync();
         return result.Entity;
     }
 
     public async Task<bool> DeletePermissionsAsync(string name)
     {
-        var permission = await _context.Permissions.SingleOrDefaultAsync(y => y.Name == name);
+        var permission = await _dbContext.Permissions.SingleOrDefaultAsync(y => y.Name == name);
         if (permission is null)
             return false;
 
-        _context.Permissions.Remove(permission);
-        await _context.SaveChangesAsync();
+        _dbContext.Permissions.Remove(permission);
+        await _dbContext.SaveChangesAsync();
 
         return true;
     }
 
     public async Task<IEnumerable<Permission>> GetAllPermissionsAsync()
-        => await _context.Permissions.ToListAsync();
+        => await _dbContext.Permissions.ToListAsync();
 
-    public async Task<HashSet<string>> GetPermissionsAsync(int userId)
+    public async Task<IEnumerable<Permission>> GetPermissionsAsync(IEnumerable<int> permissions)
     {
-        ICollection<Role>[] roles = await _context.Set<User>()
+        List<Permission> result = new();
+        foreach (var permissionId in permissions)
+        {
+            var permission = await _dbContext.Permissions.SingleOrDefaultAsync(p => p.Id == permissionId)
+                ?? throw new PermissionNotFoundException("Permission not found.");
+            result.Add(permission);
+        }
+        return result;
+    }
+
+    public async Task<HashSet<string>> GetUserPermissionsAsync(int userId)
+    {
+        var roles = await _dbContext.Set<User>()
             .Include(x => x.Roles)
             .ThenInclude(x => x.Permissions)
             .Where(x => x.Id == userId)
             .Select(x => x.Roles)
-            .ToArrayAsync();
+            .ToListAsync();
 
         return roles
             .SelectMany(x => x)
