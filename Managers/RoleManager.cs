@@ -69,11 +69,6 @@ public class RoleManager : IRoleManager
 
         var permissions = await _permissionManager.GetPermissionsAsync(dto.permissions)
             ?? throw new ArgumentNullException("Some thing went wrong.");
-
-        //if(!role.Permissions.Any())
-        //{
-        //    role.Permissions = new List<Permission>(permissions);
-        //}
         
         role.Permissions.AddRange(permissions.Distinct());
 
